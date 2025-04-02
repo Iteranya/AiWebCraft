@@ -127,24 +127,13 @@ export default function SettingsModal({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Model</FormLabel>
-                  <Select 
-                    onValueChange={field.onChange} 
-                    defaultValue={field.value}
-                    disabled={isLoading}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a model" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="gpt-3.5-turbo">gpt-3.5-turbo</SelectItem>
-                      <SelectItem value="gpt-4">gpt-4</SelectItem>
-                      <SelectItem value="gpt-4o">gpt-4o</SelectItem>
-                      <SelectItem value="claude-2">claude-2</SelectItem>
-                      <SelectItem value="llama-2-70b">llama-2-70b</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <FormControl>
+                    <Input 
+                      placeholder="Enter model name (e.g., gpt-3.5-turbo)" 
+                      {...field} 
+                      disabled={isLoading}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

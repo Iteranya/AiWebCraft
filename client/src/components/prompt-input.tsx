@@ -46,16 +46,16 @@ export default function PromptInput({
           />
           <Button 
             onClick={handleSubmit} 
-            disabled={isGenerating || !prompt.trim() || !apiSettings.endpoint || !apiSettings.apiKey}
+            disabled={isGenerating || !prompt.trim() || !apiSettings.endpoint || !apiSettings.apiKey || !apiSettings.model}
             className="mt-1"
           >
             <Send className="h-4 w-4" />
             <span className="sr-only">Send</span>
           </Button>
         </div>
-        {(!apiSettings.endpoint || !apiSettings.apiKey) && (
+        {(!apiSettings.endpoint || !apiSettings.apiKey || !apiSettings.model) && (
           <p className="text-xs text-muted-foreground mt-1">
-            Please configure your API settings before generating code.
+            Please configure your API settings (endpoint, API key, and model) before generating code.
           </p>
         )}
       </CardContent>

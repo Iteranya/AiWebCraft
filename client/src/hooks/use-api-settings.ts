@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { ApiSettings } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 
-// Default API settings if none are stored
+// Default API settings if none are stored - values should be configured by user
 const DEFAULT_API_SETTINGS: ApiSettings = {
   endpoint: "https://llm.chutes.ai/v1/chat/completions",
   apiKey: "",
-  model: "gpt-3.5-turbo"
+  model: "" // Empty by default, user must enter a model name
 };
 
 export function useApiSettings() {
