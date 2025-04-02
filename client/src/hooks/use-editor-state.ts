@@ -94,7 +94,7 @@ export function useEditorState() {
 </html>`;
   }, [content]);
 
-  // Generate code from AI
+  // Generate code from AI with streaming
   const generateFromAI = useCallback(async (prompt: string, apiSettings: any) => {
     if (!prompt.trim()) {
       toast({
@@ -107,7 +107,16 @@ export function useEditorState() {
 
     try {
       setIsGenerating(true);
+      // Switch to HTML tab to show streaming content
+      setActiveTab("html");
       
+      // Clear the HTML content to start fresh
+      setContent(prev => ({
+        ...prev,
+        html: '<!DOCTYPE html>\n<html>\n<head>\n  <meta charset="UTF-8">\n  <title>Generating...</title>\n</head>\n<body>\n  <!-- Streaming content will appear here -->\n</body>\n</html>'
+      }));
+      
+      // Set up the streaming fetch request
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: {
@@ -120,35 +129,91 @@ export function useEditorState() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to generate code");
+        throw new Error(`Server error: ${response.status}`);
       }
 
-      const data = await response.json();
+      // Set up event source for streaming
+      const reader = response.body?.getReader();
+      if (!reader) {
+        throw new Error("Response body is not readable");
+      }
       
-      if (data.success && data.code) {
-        // Parse the generated code to extract HTML, CSS, and JS
-        const htmlRegex = /<html[^>]*>([\s\S]*)<\/html>/i;
-        const cssRegex = /<style[^>]*>([\s\S]*)<\/style>/i;
-        const jsRegex = /<script[^>]*>([\s\S]*)<\/script>/i;
+      // Accumulate the complete response
+      let accumulatedCode = '';
+      const decoder = new TextDecoder();
+      
+      // Process the stream
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
         
-        const htmlMatch = data.code.match(htmlRegex);
-        const cssMatch = data.code.match(cssRegex);
-        const jsMatch = data.code.match(jsRegex);
+        // Decode the chunk
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split('\n\n');
         
-        const newContent = {
-          html: htmlMatch ? `<!DOCTYPE html>\n<html>${htmlMatch[1]}</html>` : data.code,
-          css: cssMatch ? cssMatch[1] : content.css,
-          js: jsMatch ? jsMatch[1] : content.js
-        };
-        
-        setContent(newContent);
-        toast({
-          title: "Success",
-          description: "Website code generated successfully",
-        });
-      } else {
-        throw new Error("No code was generated");
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            try {
+              const data = JSON.parse(line.substring(6));
+              
+              if (data.error) {
+                throw new Error(data.error);
+              }
+              
+              if (data.content) {
+                // Accumulate code
+                accumulatedCode += data.content;
+                
+                // Update the editor with the accumulated content
+                setContent(prev => {
+                  // If we have a reasonably complete HTML document, use it directly
+                  if (accumulatedCode.includes('<html') && accumulatedCode.includes('</html>')) {
+                    return {
+                      ...prev,
+                      html: accumulatedCode
+                    };
+                  } 
+                  // Otherwise, wrap it in a basic HTML structure
+                  else {
+                    return {
+                      ...prev,
+                      html: `<!DOCTYPE html>\n<html>\n<head>\n  <meta charset="UTF-8">\n  <title>Generated Website</title>\n</head>\n<body>\n${accumulatedCode}\n</body>\n</html>`
+                    };
+                  }
+                });
+              }
+              
+              if (data.done) {
+                // Streaming is complete, parse the final code
+                const finalCode = accumulatedCode;
+                
+                // Extract HTML, CSS, and JS from the complete response
+                const htmlRegex = /<html[^>]*>([\s\S]*)<\/html>/i;
+                const cssRegex = /<style[^>]*>([\s\S]*)<\/style>/i;
+                const jsRegex = /<script[^>]*>([\s\S]*)<\/script>/i;
+                
+                const htmlMatch = finalCode.match(htmlRegex);
+                const cssMatch = finalCode.match(cssRegex);
+                const jsMatch = finalCode.match(jsRegex);
+                
+                const newContent = {
+                  html: htmlMatch ? `<!DOCTYPE html>\n<html>${htmlMatch[1]}</html>` : finalCode,
+                  css: cssMatch ? cssMatch[1] : content.css,
+                  js: jsMatch ? jsMatch[1] : content.js
+                };
+                
+                setContent(newContent);
+                toast({
+                  title: "Success",
+                  description: "Website code generated successfully",
+                });
+                break;
+              }
+            } catch (e) {
+              console.error('Error processing stream data:', e);
+            }
+          }
+        }
       }
     } catch (error) {
       console.error("Error generating code:", error);

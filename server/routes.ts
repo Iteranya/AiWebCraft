@@ -100,14 +100,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // API endpoint for generating code from AI
+  // API endpoint for generating code from AI (streaming version)
   app.post("/api/generate", async (req: Request, res: Response) => {
+    // Set headers for server-sent events
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
     try {
       // Validate the request
       const validatedData = aiRequestSchema.parse(req.body);
       const { prompt, endpoint, apiKey, model } = validatedData;
       
-      // Prepare OpenAI API request
+      // Prepare OpenAI API request with streaming enabled
       const apiRequest = {
         model,
         messages: [
@@ -122,10 +127,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ],
         temperature: 0.7,
         max_tokens: 4000,
+        stream: true, // Enable streaming
         // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
       };
       
-      // Call the OpenAI-compatible API
+      // Call the OpenAI-compatible API with streaming
       const response = await axios.post(
         endpoint,
         apiRequest,
@@ -134,42 +140,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
             "Content-Type": "application/json",
             Authorization: `Bearer ${apiKey}`,
           },
+          responseType: 'stream'
         }
       );
       
-      // Extract the generated content
-      const generatedCode = response.data.choices[0].message.content;
-      
-      // Return the generated code to the client
-      res.json({ 
-        success: true, 
-        code: generatedCode
+      // Handle streaming response
+      response.data.on('data', (chunk: Buffer) => {
+        const lines = chunk.toString().split('\n');
+        for (const line of lines) {
+          if (line.startsWith('data: ') && line !== 'data: [DONE]') {
+            try {
+              const data = JSON.parse(line.substring(6));
+              // Extract the content delta if available
+              const content = data.choices[0]?.delta?.content || '';
+              if (content) {
+                // Send the content chunk to the client
+                res.write(`data: ${JSON.stringify({ content })}\n\n`);
+              }
+            } catch (e) {
+              console.error('Error parsing streaming response:', e);
+            }
+          }
+        }
       });
+      
+      response.data.on('end', () => {
+        // Send a done event when the stream ends
+        res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+        res.end();
+      });
+      
+      // Handle errors in the stream
+      response.data.on('error', (err: Error) => {
+        console.error('Stream error:', err);
+        res.write(`data: ${JSON.stringify({ error: err.message })}\n\n`);
+        res.end();
+      });
+      
     } catch (error) {
       console.error("Error generating code:", error);
       
       if (error instanceof ZodError) {
-        return res.status(400).json({ 
-          success: false, 
-          message: "Invalid request data", 
-          errors: error.errors 
-        });
-      }
-      
-      if (axios.isAxiosError(error)) {
-        const statusCode = error.response?.status || 500;
+        res.write(`data: ${JSON.stringify({ 
+          error: "Invalid request data", 
+          details: error.errors 
+        })}\n\n`);
+      } else if (axios.isAxiosError(error)) {
         const errorMessage = error.response?.data?.error?.message || "Error calling the AI API";
-        
-        return res.status(statusCode).json({ 
-          success: false, 
-          message: errorMessage 
-        });
+        res.write(`data: ${JSON.stringify({ error: errorMessage })}\n\n`);
+      } else {
+        res.write(`data: ${JSON.stringify({ error: "Failed to generate code" })}\n\n`);
       }
       
-      res.status(500).json({ 
-        success: false, 
-        message: "Failed to generate code" 
-      });
+      res.end();
     }
   });
 
