@@ -113,7 +113,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         messages: [
           {
             role: "system",
-            content: "You are a web developer assistant. Generate clean, valid HTML, CSS, and JavaScript code based on the user's request. Provide the code in an appropriate format without any additional explanations."
+            content: "ONLY USE HTML, CSS AND JAVASCRIPT. If you want to use ICON make sure to import the library first. Try to create the best UI possible by using only HTML, CSS and JAVASCRIPT. Also, try to ellaborate as much as you can, to create something unique. ALWAYS GIVE THE RESPONSE INTO A SINGLE HTML FILE"
           },
           {
             role: "user",
