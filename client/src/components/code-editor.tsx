@@ -6,7 +6,7 @@ import hljs from 'highlight.js/lib/core';
 import html from 'highlight.js/lib/languages/xml';
 import css from 'highlight.js/lib/languages/css';
 import javascript from 'highlight.js/lib/languages/javascript';
-import 'highlight.js/styles/github-dark.css';
+import 'highlight.js/styles/atom-one-dark.css';
 
 interface CodeEditorProps {
   activeTab: EditorTab;
@@ -99,11 +99,8 @@ export default function CodeEditor({
               {/* Highlighted Code - Positioned below the textarea but visible */}
               <pre 
                 ref={highlightedCodeRef}
-                className="absolute top-0 left-0 w-full h-full m-0 p-4 font-mono text-sm overflow-auto whitespace-pre-wrap break-words"
-                style={{ 
-                  pointerEvents: 'none',
-                  backgroundColor: '#1e293b' /* Slightly lighter dark background for better contrast */
-                }}
+                className="absolute top-0 left-0 w-full h-full m-0 p-4 font-mono text-sm bg-gray-900 overflow-auto whitespace-pre-wrap break-words"
+                style={{ pointerEvents: 'none' }}
               >
                 <code 
                   className={`language-${activeTab === 'js' ? 'javascript' : activeTab}`}
@@ -116,14 +113,11 @@ export default function CodeEditor({
                 ref={editorRef}
                 value={content[activeTab]}
                 onChange={handleTextareaChange}
-                className="absolute top-0 left-0 w-full h-full p-4 font-mono text-sm border-none bg-transparent caret-white resize-none focus:outline-none z-10 whitespace-pre-wrap"
+                className="absolute top-0 left-0 w-full h-full p-4 font-mono text-sm border-none bg-transparent text-transparent caret-white resize-none focus:outline-none z-10 whitespace-pre-wrap"
                 spellCheck="false"
                 autoCapitalize="off"
                 autoCorrect="off"
-                style={{ 
-                  tabSize: 2,
-                  color: 'rgba(255, 255, 255, 0.05)' /* Very faint text to maintain caret positioning */
-                }}
+                style={{ tabSize: 2 }}
               />
             </div>
           </TabsContent>
