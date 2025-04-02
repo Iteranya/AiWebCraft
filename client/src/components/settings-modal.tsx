@@ -36,6 +36,7 @@ const formSchema = z.object({
   endpoint: z.string().url({ message: "Please enter a valid URL" }),
   apiKey: z.string().min(1, { message: "API Key is required" }),
   model: z.string().min(1, { message: "Model is required" }),
+  maxTokens: z.number().int().min(100, { message: "Minimum 100 tokens required" }).max(16000, { message: "Maximum 16000 tokens allowed" }),
 });
 
 export default function SettingsModal({ 
@@ -55,6 +56,7 @@ export default function SettingsModal({
       endpoint: settings.endpoint,
       apiKey: settings.apiKey,
       model: settings.model,
+      maxTokens: settings.maxTokens,
     },
   });
 
@@ -131,6 +133,28 @@ export default function SettingsModal({
                     <Input 
                       placeholder="Enter model name (e.g., gpt-3.5-turbo)" 
                       {...field} 
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="maxTokens"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Max Response Length (tokens)</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="number"
+                      placeholder="4000" 
+                      min={100}
+                      max={16000}
+                      {...field}
+                      onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 4000)}
                       disabled={isLoading}
                     />
                   </FormControl>

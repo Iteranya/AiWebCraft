@@ -1,7 +1,12 @@
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EditorTab } from '@/lib/types';
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
+import hljs from 'highlight.js/lib/core';
+import html from 'highlight.js/lib/languages/xml';
+import css from 'highlight.js/lib/languages/css';
+import javascript from 'highlight.js/lib/languages/javascript';
+import 'highlight.js/styles/atom-one-dark.css';
 
 interface CodeEditorProps {
   activeTab: EditorTab;
@@ -20,21 +25,55 @@ export default function CodeEditor({
   onTabChange, 
   onContentChange 
 }: CodeEditorProps) {
-  const [editor, setEditor] = useState<any>(null);
-  const monacoRef = useRef<any>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [highlightedCode, setHighlightedCode] = useState<string>('');
+  const editorRef = useRef<HTMLTextAreaElement>(null);
+  const highlightedCodeRef = useRef<HTMLPreElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  
+  // Register highlight.js languages
+  useEffect(() => {
+    hljs.registerLanguage('html', html);
+    hljs.registerLanguage('css', css);
+    hljs.registerLanguage('javascript', javascript);
+  }, []);
+  
+  // Update highlighted code when content or active tab changes
+  useEffect(() => {
+    let code = content[activeTab];
+    let language = activeTab === 'html' ? 'html' : activeTab === 'css' ? 'css' : 'javascript';
+    
+    try {
+      const highlighted = hljs.highlight(code, { language }).value;
+      setHighlightedCode(highlighted);
+    } catch (error) {
+      console.error('Highlighting error:', error);
+      setHighlightedCode(code);
+    }
+  }, [content, activeTab]);
+  
+  // Sync scroll between textarea and highlighted code
+  useEffect(() => {
+    const handleScroll = () => {
+      if (editorRef.current && highlightedCodeRef.current && scrollRef.current) {
+        const { scrollTop } = editorRef.current;
+        highlightedCodeRef.current.scrollTop = scrollTop;
+        scrollRef.current.scrollTop = scrollTop;
+      }
+    };
+    
+    const editor = editorRef.current;
+    if (editor) {
+      editor.addEventListener('scroll', handleScroll);
+      return () => editor.removeEventListener('scroll', handleScroll);
+    }
+  }, []);
   
   // Handle tab change
   const handleTabChange = (value: string) => {
     onTabChange(value as EditorTab);
   };
 
-  // Handle editor content change - using useCallback to avoid recreating function on every render
-  const handleEditorChange = useCallback((value: string) => {
-    onContentChange(value);
-  }, [onContentChange]);
-
-  // Use simple textarea as fallback (this is temporary until we figure out monaco editor issues)
+  // Handle editor content change
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onContentChange(e.target.value);
   };
@@ -56,12 +95,29 @@ export default function CodeEditor({
         
         <div className="flex-1 overflow-hidden bg-background p-0">
           <TabsContent value={activeTab} className="h-full m-0 p-0 data-[state=active]:flex-1">
-            <div className="h-full w-full">
+            <div className="h-full w-full relative" ref={scrollRef}>
+              {/* Highlighted Code - Positioned below the textarea but visible */}
+              <pre 
+                ref={highlightedCodeRef}
+                className="absolute top-0 left-0 w-full h-full m-0 p-4 font-mono text-sm bg-gray-900 overflow-auto whitespace-pre-wrap break-words"
+                style={{ pointerEvents: 'none' }}
+              >
+                <code 
+                  className={`language-${activeTab === 'js' ? 'javascript' : activeTab}`}
+                  dangerouslySetInnerHTML={{ __html: highlightedCode }}
+                />
+              </pre>
+              
+              {/* Actual Editable Textarea - Transparent background so highlighted code shows through */}
               <textarea
+                ref={editorRef}
                 value={content[activeTab]}
                 onChange={handleTextareaChange}
-                className="w-full h-full p-4 font-mono text-sm border-none bg-gray-900 text-white resize-none focus:outline-none"
+                className="absolute top-0 left-0 w-full h-full p-4 font-mono text-sm border-none bg-transparent text-transparent caret-white resize-none focus:outline-none z-10 whitespace-pre-wrap"
                 spellCheck="false"
+                autoCapitalize="off"
+                autoCorrect="off"
+                style={{ tabSize: 2 }}
               />
             </div>
           </TabsContent>

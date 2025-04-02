@@ -2,6 +2,7 @@ export interface ApiSettings {
   endpoint: string;
   apiKey: string;
   model: string;
+  maxTokens: number;
 }
 
 export type EditorTab = "html" | "css" | "js";

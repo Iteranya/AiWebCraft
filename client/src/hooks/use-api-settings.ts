@@ -6,7 +6,8 @@ import { useToast } from "@/hooks/use-toast";
 const DEFAULT_API_SETTINGS: ApiSettings = {
   endpoint: "https://llm.chutes.ai/v1/chat/completions",
   apiKey: "",
-  model: "" // Empty by default, user must enter a model name
+  model: "", // Empty by default, user must enter a model name
+  maxTokens: 4000 // Default max tokens value
 };
 
 export function useApiSettings() {

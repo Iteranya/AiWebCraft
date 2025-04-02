@@ -110,7 +110,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Validate the request
       const validatedData = aiRequestSchema.parse(req.body);
-      const { prompt, endpoint, apiKey, model } = validatedData;
+      const { prompt, endpoint, apiKey, model, maxTokens } = validatedData;
       
       // Prepare OpenAI API request with streaming enabled
       const apiRequest = {
@@ -126,7 +126,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         ],
         temperature: 0.7,
-        max_tokens: 4000,
+        max_tokens: maxTokens,
         stream: true, // Enable streaming
         // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
       };

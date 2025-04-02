@@ -16,6 +16,7 @@ export const apiSettings = pgTable("api_settings", {
   endpoint: text("endpoint").notNull(),
   apiKey: text("api_key").notNull(),
   model: text("model").notNull(),
+  maxTokens: text("max_tokens").notNull().default("4000"),
 });
 
 // Projects schema to save user projects
@@ -41,6 +42,7 @@ export const insertApiSettingsSchema = createInsertSchema(apiSettings).pick({
   endpoint: true,
   apiKey: true,
   model: true,
+  maxTokens: true,
 });
 
 export const insertProjectSchema = createInsertSchema(projects).pick({
@@ -69,6 +71,7 @@ export const aiRequestSchema = z.object({
   endpoint: z.string().url("Invalid endpoint URL"),
   apiKey: z.string().min(1, "API key is required"),
   model: z.string().min(1, "Model is required"),
+  maxTokens: z.number().int().min(100).max(16000).default(4000),
 });
 
 export type AIRequest = z.infer<typeof aiRequestSchema>;
