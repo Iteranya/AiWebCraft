@@ -1,5 +1,5 @@
 {
-  "name": "rest-express",
+  "name": "ai-web-craft",
   "version": "1.0.0",
   "type": "module",
   "license": "MIT",
@@ -104,5 +104,8 @@
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.8"
-  }
+  },
+  "description": "Make website with prompt, simple, nothing weird",
+  "main": "postcss.config.js",
+  "author": ""
 }

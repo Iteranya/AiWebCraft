@@ -9,18 +9,33 @@ interface PromptInputProps {
   onGenerateCode: (prompt: string, apiSettings: ApiSettings) => Promise<void>;
   apiSettings: ApiSettings;
   isGenerating: boolean;
+  editorContent: {    // Add this property to receive current editor content
+    html: string;
+    css: string;
+    js: string;
+  };
 }
 
 export default function PromptInput({ 
   onGenerateCode, 
   apiSettings, 
-  isGenerating 
+  isGenerating,
+  editorContent  // Add this parameter
 }: PromptInputProps) {
   const [prompt, setPrompt] = useState('');
 
   const handleSubmit = async () => {
     if (prompt.trim()) {
-      await onGenerateCode(prompt, apiSettings);
+      // Create an enhanced prompt that includes the current editor state
+      const enhancedPrompt = `
+Current editor state:
+${editorContent.html}
+You are free to rewrite the content of the editor to follow User's request. 
+
+User request:
+${prompt}
+      `.trim();
+      await onGenerateCode(enhancedPrompt, apiSettings);
     }
   };
 

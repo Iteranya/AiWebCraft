@@ -68,6 +68,7 @@ export type Project = typeof projects.$inferSelect;
 // API schemas for validation
 export const aiRequestSchema = z.object({
   prompt: z.string().min(1, "Prompt is required"),
+  history:z.string().optional(),
   endpoint: z.string().url("Invalid endpoint URL"),
   apiKey: z.string().min(1, "API key is required"),
   model: z.string().min(1, "Model is required"),

@@ -123,7 +123,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           {
             role: "user",
             content: prompt
-          }
+          },
+          {
+            role: "assistant",
+            content: "```html\n"
+          },
         ],
         temperature: 0.7,
         max_tokens: maxTokens,

@@ -25,28 +25,8 @@ const DEFAULT_CONTENT: EditorContent = {
   </script>
 </body>
 </html>`,
-  css: `body {
-  font-family: 'Arial', sans-serif;
-  line-height: 1.6;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  color: #333;
-}
-
-h1 {
-  color: #2563eb;
-  border-bottom: 2px solid #e5e7eb;
-  padding-bottom: 10px;
-}
-
-p {
-  margin-bottom: 16px;
-}`,
-  js: `// Add your JavaScript code here
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('Website loaded successfully!');
-});`
+  css: ``,
+  js: ``
 };
 
 export function useEditorState() {
@@ -113,7 +93,7 @@ export function useEditorState() {
       // Clear the HTML content to start fresh
       setContent(prev => ({
         ...prev,
-        html: '<!DOCTYPE html>\n<html>\n<head>\n  <meta charset="UTF-8">\n  <title>Generating...</title>\n</head>\n<body>\n  <!-- Streaming content will appear here -->\n</body>\n</html>'
+        html: ''
       }));
       
       // Set up the streaming fetch request
@@ -177,7 +157,7 @@ export function useEditorState() {
                   else {
                     return {
                       ...prev,
-                      html: `<!DOCTYPE html>\n<html>\n<head>\n  <meta charset="UTF-8">\n  <title>Generated Website</title>\n</head>\n<body>\n${accumulatedCode}\n</body>\n</html>`
+                      html: `${accumulatedCode}`
                     };
                   }
                 });

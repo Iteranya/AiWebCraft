@@ -124,6 +124,7 @@ export default function Home() {
             onGenerateCode={generateFromAI}
             apiSettings={settings}
             isGenerating={isGenerating}
+            editorContent={content}
           />
         </div>
         
