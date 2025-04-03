@@ -163,8 +163,8 @@ const DEFAULT_CONTENT: EditorContent = {
             </div>
             
             <div class="social-links">
-                <a href="https://github.com/Iteranya/AiWebCraft" class="social-link"><i class="fab fa-github"></i></a>
-                <a href="https://discord.gg/Apr4MTE3vm" class="social-link"><i class="fab fa-discord"></i></a>
+    <a href="https://github.com/Iteranya/AiWebCraft" class="social-link" target="_blank"><i class="fab fa-github"></i></a>
+    <a href="https://discord.gg/Apr4MTE3vm" class="social-link" target="_blank"><i class="fab fa-discord"></i></a>
             </div>
         </div>
     </div>
