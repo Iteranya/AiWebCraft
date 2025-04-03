@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aina-chan | Quick Greeting</title>
+    <title>AI Website Builder | No UI Skills Required</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -15,6 +15,8 @@
             --card-bg: white;
             --text-color: #2d3436;
             --footer-bg: transparent;
+            --code-bg: #f8f9fa;
+            --code-color: #e83e8c;
         }
 
         [data-theme="dark"] {
@@ -26,6 +28,8 @@
             --card-bg: #1e272e;
             --text-color: #f5f6fa;
             --footer-bg: rgba(0, 0, 0, 0.2);
+            --code-bg: #2d3436;
+            --code-color: #ff9ff3;
         }
 
         * {
@@ -46,106 +50,188 @@
         }
 
         .container {
-            max-width: 600px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
             flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
         }
 
-        .card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 2.5rem;
+        header {
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
             position: relative;
-            overflow: hidden;
         }
 
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 10px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
         }
 
-        .aina-avatar {
-            width: 120px;
-            height: 120px;
+        .avatar {
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             object-fit: cover;
             border: 5px solid var(--card-bg);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            margin: 0 auto 1.5rem;
-            display: block;
         }
 
-        h1 {
+        .title {
+            font-size: 3rem;
             color: var(--primary);
             margin-bottom: 1rem;
-            font-size: 2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        p {
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--secondary);
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .tagline {
+            font-style: italic;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+
+        .section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            color: var(--primary);
             margin-bottom: 1.5rem;
-            font-size: 1.1rem;
-            color: var(--text-color);
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .signature {
-            font-family: 'Brush Script MT', cursive;
-            font-size: 1.8rem;
+        .feature-list {
+            list-style-type: none;
+            margin-left: 1rem;
+        }
+
+        .feature-item {
+            margin-bottom: 1rem;
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .feature-item::before {
+            content: '✨';
+            position: absolute;
+            left: 0;
+        }
+
+        .note {
+            background-color: rgba(0, 0, 0, 0.05);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            font-style: italic;
+        }
+
+        [data-theme="dark"] .note {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        code {
+            background-color: var(--code-bg);
+            color: var(--code-color);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .command {
             color: var(--accent);
-            margin-top: 1.5rem;
+        }
+
+        .quote {
+            border-left: 4px solid var(--accent);
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
         }
 
         .disclaimer {
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             opacity: 0.7;
             margin-top: 2rem;
-            padding: 1rem;
+            padding: 1.5rem;
             background-color: rgba(0, 0, 0, 0.05);
             border-radius: 10px;
+            text-align: center;
         }
 
         .hearts {
             color: var(--accent);
             font-size: 1.5rem;
             margin: 1rem 0;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.3); }
-            100% { transform: scale(1); }
+            text-align: center;
         }
 
         footer {
             text-align: center;
-            padding: 1.5rem;
+            padding: 2rem;
             font-size: 0.9rem;
             color: var(--text-color);
             opacity: 0.7;
             background-color: var(--footer-bg);
+            margin-top: 2rem;
         }
 
         .social-links {
             display: flex;
             justify-content: center;
-            gap: 1rem;
-            margin-top: 1.5rem;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
         }
 
         .social-link {
             color: var(--primary);
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             transition: all 0.3s ease;
         }
 
@@ -155,7 +241,7 @@
         }
 
         .theme-toggle {
-            position: absolute;
+            position: fixed;
             top: 20px;
             right: 20px;
             background: transparent;
@@ -163,7 +249,7 @@
             color: var(--primary);
             font-size: 1.5rem;
             cursor: pointer;
-            z-index: 10;
+            z-index: 100;
             transition: all 0.3s ease;
         }
 
@@ -176,8 +262,35 @@
             outline: none;
         }
 
-        [data-theme="dark"] .disclaimer {
-            background-color: rgba(255, 255, 255, 0.1);
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .screenshot {
+            width: 100%;
+            border-radius: 10px;
+            margin: 1rem 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            .title {
+                font-size: 2rem;
+            }
+            .section {
+                padding: 1.5rem;
+            }
         }
     </style>
 </head>
@@ -187,31 +300,159 @@
     </button>
 
     <div class="container">
-        <div class="card">
-            <img src="https://i.imgur.com/VQ2eNhq.jpeg" alt="Aina-chan" class="aina-avatar">
-            <h1>Hello from Aina-chan!</h1>
-            <p>I'm your quick AI assistant here to help with web stuff when you're in a hurry.</p>
+        <header>
+            <div class="hero">
+                <img src="https://i.imgur.com/VQ2eNhq.jpeg" alt="Aina-chan" class="avatar">
+                <img src="https://i.imgur.com/AaGxEqD.png" alt="Ars Paradox" class="avatar">
+            </div>
+            <h1 class="title">AI Website Builder</h1>
+            <h2 class="subtitle">No UI Skills Required <span class="badge">Mostly</span></h2>
+            <p class="tagline">Built with Replit, Vite, and pure spite for front-end development</p>
+            
             <div class="hearts">
                 <i class="fas fa-heart"></i>
                 <i class="fas fa-heart"></i>
                 <i class="fas fa-heart"></i>
             </div>
-            <p>Remember: I'm faster, not necessarily better. Use my suggestions at your own discretion!</p>
-            <div class="signature">- Aina-chan</div>
+        </header>
 
-            <div class="disclaimer">
-                <p><i class="fas fa-exclamation-triangle"></i> Disclaimer: Aina-chan generates quick solutions that may require developer review. Speed ≠ perfection. Always test before production use.</p>
-            </div>
+        <div class="section">
+            <h2 class="section-title"><i class="fas fa-star"></i> Features</h2>
+            <ul class="feature-list">
+                <li class="feature-item">
+                    <strong>Two Panels, Zero Talent</strong>:
+                    <ul>
+                        <li>Left: Raw HTML generated by AI (pray it works)</li>
+                        <li>Right: Instant preview (where miracles happen... sometimes)</li>
+                    </ul>
+                    <div class="note">Depends on your AI, really. I use the newest Deepseek v3, works like a charm~</div>
+                </li>
+                <li class="feature-item">
+                    <strong>AI Prompt (Bottom Left)</strong>:
+                    <ul>
+                        <li>Write prompts like <code>"Make a website for my cat's bakery"</code> or <code>"Create a 90s Geocities disaster"</code></li>
+                    </ul>
+                    <div class="note">You want to be a bit more specific than this</div>
+                </li>
+                <li class="feature-item">
+                    <strong>LLM Settings (Top Right)</strong>:
+                    <ul>
+                        <li>Plug in your AI endpoint and API key. No API? Good luck.</li>
+                    </ul>
+                    <div class="note">Openrouter has free Deepseek I think, go check it out</div>
+                </li>
+                <li class="feature-item">
+                    <strong>CSS/JS Tabs (For Show)</strong>:
+                    <ul>
+                        <li>The AI ignores these (it's busy backflipping over your CSS requests)</li>
+                        <li>Add inline styles or scripts manually if you're feeling brave</li>
+                    </ul>
+                    <div class="note">At first, the Generated code by Replit makes the AI make CSS here, but then I figured that, deepsite does it better by using a single monolithic html, easier for AI to understand</div>
+                </li>
+            </ul>
+        </div>
 
-            <div class="social-links">
-                <a href="https://github.com/Iteranya/AiWebCraft" class="social-link" target="_blank"><i class="fab fa-github"></i></a>
-                <a href="https://discord.gg/Apr4MTE3vm" class="social-link" target="_blank"><i class="fab fa-discord"></i></a>
+        <div class="section">
+            <h2 class="section-title"><i class="fas fa-download"></i> Installation</h2>
+            <pre><code class="command">git clone https://github.com/user/AI-Website-Builder.git
+cd AI-Website-Builder
+npm install
+npm run dev</code></pre>
+            <div class="note">Default port: <strong>8844</strong>—because why pick a normal one? (. . . Look, I have Silly Tavern, A1111, and a few others running, gotta make room aight???)</div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><i class="fas fa-magic"></i> Usage</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3 class="card-title">Prompt Examples</h3>
+                    <ul>
+                        <li><code>"Make a greeting card for my grandma who loves dragons."</code></li>
+                        <li><code>"Create a placeholder HTML component that looks less sad than my UI skills."</code></li>
+                        <li><code>"Turn this 10,000-word essay into a gorgeous website. Yes, all of it."</code></li>
+                    </ul>
+                    <div class="note">This works way, way, way better than I expected. Seriously, do try it</div>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">Tweaking</h3>
+                    <p>Use the <strong>CSS/JS tabs</strong> to add inline styles/scripts. The AI won't judge you (but I will).</p>
+                    <div class="note">I won't, pop off bestie</div>
+                </div>
             </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><i class="fas fa-cog"></i> Configuration</h2>
+            <p><strong>Top Right Corner</strong>:</p>
+            <ul>
+                <li>Set your LLM endpoint and API key (because free rides don't last forever)</li>
+            </ul>
+            <div class="note">It's not that expensive, really</div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><i class="fas fa-lightbulb"></i> Tips & Tricks</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3 class="card-title">The AI Can</h3>
+                    <ul>
+                        <li>Generate entire articles into websites (just paste and pray)</li>
+                        <li>"Backflip" over your CSS requests (metaphorically, sadly)</li>
+                        <li>Make placeholder components faster than you can Google "how to center a div"</li>
+                    </ul>
+                    <div class="note">Oh another thing, you can put some html into the html bar and ask the AI to fix it and make it better~</div>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">The AI Cannot</h3>
+                    <ul>
+                        <li>Fix your existential dread</li>
+                        <li>Teach you front-end development (that's the point)</li>
+                    </ul>
+                    <div class="note">You can ask the AI "Make me a Website that fix my existential dread" or to make a Front End Learning pipeline/syllabus</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><i class="fas fa-exclamation-triangle"></i> Known Quirks</h2>
+            <ul>
+                <li>The AI <strong>ignores CSS/JS tabs</strong>. It's for your own good</li>
+                <li>Inline styles are your friend. The AI is not</li>
+                <li>Port 8844 is hardcoded because the dev forgot how to change Vite's config</li>
+            </ul>
+            <div class="note">You know what? Fair</div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><i class="fas fa-balance-scale"></i> License</h2>
+            <p>MIT. Do whatever. Sell it, burn it, turn it into a NFT. I don't care.</p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><i class="fas fa-hands-helping"></i> Acknowledgments</h2>
+            <ul>
+                <li>The <strong>Hugging Face team</strong> for <a href="https://huggingface.co/spaces/enzostvs/deepsite" target="_blank">Deepsite AI</a>, which did this <em>way</em> better</li>
+                <li><strong>Replit</strong> for hosting the chaos</li>
+                <li><strong>Coffee</strong>, the real MVP</li>
+            </ul>
+            <div class="note">Eh, I dunno, mine works locally, and you can even try using your Local AI to run it</div>
+            <div class="note">For Making the whole thing, actually</div>
+            <div class="note">Have ya'll tried one of those Nescafe Espresso and some sweetened flavored tea??? Best mocktail for lactose intolerant.</div>
+        </div>
+
+        <div class="disclaimer">
+            <p><i class="fas fa-exclamation-triangle"></i> <strong>Disclaimer</strong>: This project was built by someone whose UI skills are outdone by a potato. Use at your own risk. (Also, it's mostly TypeScript. Don't ask why.)</p>
+            <div class="note">Web Dev Skills, not just UI Skills. If you check all my other project, the stuff I'm proud off has nothing to do with Web Dev whatsoever.</div>
+        </div>
+
+        <div class="social-links">
+            <a href="https://github.com/Iteranya/AiWebCraft" class="social-link" target="_blank"><i class="fab fa-github"></i></a>
+            <a href="https://discord.gg/Apr4MTE3vm" class="social-link" target="_blank"><i class="fab fa-discord"></i></a>
         </div>
     </div>
 
     <footer>
-        <p>Made with <i class="fas fa-heart" style="color: var(--accent);"></i> by Aina-chan | Not responsible for questionable color choices</p>
+        <p>Made with <i class="fas fa-heart" style="color: var(--accent);"></i> by Aina-chan & Ars Paradox | Not responsible for questionable design choices</p>
     </footer>
 
     <script>
