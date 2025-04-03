@@ -18,6 +18,20 @@ const DEFAULT_CONTENT: EditorContent = {
             --accent: #fd79a8;
             --dark: #2d3436;
             --light: #f5f6fa;
+            --card-bg: white;
+            --text-color: #2d3436;
+            --footer-bg: transparent;
+        }
+        
+        [data-theme="dark"] {
+            --primary: #a29bfe;
+            --secondary: #6c5ce7;
+            --accent: #ff9ff3;
+            --dark: #f5f6fa;
+            --light: #2d3436;
+            --card-bg: #1e272e;
+            --text-color: #f5f6fa;
+            --footer-bg: rgba(0, 0, 0, 0.2);
         }
         
         * {
@@ -25,11 +39,12 @@ const DEFAULT_CONTENT: EditorContent = {
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         
         body {
             background-color: var(--light);
-            color: var(--dark);
+            color: var(--text-color);
             line-height: 1.6;
             min-height: 100vh;
             display: flex;
@@ -47,7 +62,7 @@ const DEFAULT_CONTENT: EditorContent = {
         }
         
         .card {
-            background: white;
+            background: var(--card-bg);
             border-radius: 20px;
             padding: 2.5rem;
             text-align: center;
@@ -71,7 +86,7 @@ const DEFAULT_CONTENT: EditorContent = {
             height: 120px;
             border-radius: 50%;
             object-fit: cover;
-            border: 5px solid white;
+            border: 5px solid var(--card-bg);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             margin: 0 auto 1.5rem;
             display: block;
@@ -86,6 +101,7 @@ const DEFAULT_CONTENT: EditorContent = {
         p {
             margin-bottom: 1.5rem;
             font-size: 1.1rem;
+            color: var(--text-color);
         }
         
         .signature {
@@ -121,8 +137,9 @@ const DEFAULT_CONTENT: EditorContent = {
             text-align: center;
             padding: 1.5rem;
             font-size: 0.9rem;
-            color: var(--dark);
+            color: var(--text-color);
             opacity: 0.7;
+            background-color: var(--footer-bg);
         }
         
         .social-links {
@@ -142,9 +159,39 @@ const DEFAULT_CONTENT: EditorContent = {
             color: var(--accent);
             transform: translateY(-3px);
         }
+        
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            color: var(--primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            color: var(--accent);
+            transform: rotate(30deg);
+        }
+        
+        .theme-toggle:focus {
+            outline: none;
+        }
+        
+        [data-theme="dark"] .disclaimer {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
     </style>
 </head>
 <body>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <i class="fas fa-moon"></i>
+    </button>
+    
     <div class="container">
         <div class="card">
             <img src="https://i.imgur.com/VQ2eNhq.jpeg" alt="Aina-chan" class="aina-avatar">
@@ -163,8 +210,8 @@ const DEFAULT_CONTENT: EditorContent = {
             </div>
             
             <div class="social-links">
-    <a href="https://github.com/Iteranya/AiWebCraft" class="social-link" target="_blank"><i class="fab fa-github"></i></a>
-    <a href="https://discord.gg/Apr4MTE3vm" class="social-link" target="_blank"><i class="fab fa-discord"></i></a>
+                <a href="https://github.com/Iteranya/AiWebCraft" class="social-link" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://discord.gg/Apr4MTE3vm" class="social-link" target="_blank"><i class="fab fa-discord"></i></a>
             </div>
         </div>
     </div>
@@ -186,6 +233,37 @@ const DEFAULT_CONTENT: EditorContent = {
                 }, index * 200);
             });
         }, 3000);
+        
+        // Dark mode toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        let darkMode = localStorage.getItem('darkMode') === 'true';
+        
+        // Apply saved theme
+        if (darkMode) {
+            body.setAttribute('data-theme', 'dark');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            darkMode = !darkMode;
+            localStorage.setItem('darkMode', darkMode);
+            
+            if (darkMode) {
+                body.setAttribute('data-theme', 'dark');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                body.removeAttribute('data-theme');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        });
+        
+        // Add smooth transition when page loads
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
+            }, 100);
+        });
     </script>
 </body>
 </html>`,
@@ -339,11 +417,11 @@ export function useEditorState() {
                 const htmlMatch = finalCode.match(htmlRegex);
                 const cssMatch = finalCode.match(cssRegex);
                 const jsMatch = finalCode.match(jsRegex);
-                
+                //TODO: I can do better than this...
                 const newContent = {
                   html: htmlMatch ? `<!DOCTYPE html>\n<html>${htmlMatch[1]}</html>` : finalCode,
-                  css: cssMatch ? cssMatch[1] : content.css,
-                  js: jsMatch ? jsMatch[1] : content.js
+                  css: "",
+                  js: ""
                 };
                 
                 setContent(newContent);
