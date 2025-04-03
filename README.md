@@ -1,7 +1,7 @@
 # AI Website Builder (No UI Skills Required) 🤖💅
 (((I mean, if you're using it for front end dev use ***Some*** UI Skill would be required))
 
-A website builder crafted by someone who **actively refuses** ((Look I just don't have the time okay???)) to learn HTML, CSS, or JS. Why bother when AI can do it for you? Built with Replit ((Like, 99% by Replit)), Vite, and pure spite for front-end development. Inspired by [Deepsite AI](https://huggingface.co/spaces/enzostvs/deepsite) ((And many others, but this one is open source!!)).
+A website builder crafted by someone who **actively refuses** ((Look I just don't have the time okay???)) to learn HTML, CSS, or JS. Why bother when AI can do it for you? Built with Replit ((Like, 99% by Replit)), Vite, and pure spite for front-end development. Inspired by [Deepsite AI](https://huggingface.co/spaces/enzostvs/deepsite) ((And many others, but Deepsite is open source!!)).
 
 ---
 
