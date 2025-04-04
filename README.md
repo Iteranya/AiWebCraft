@@ -1,4 +1,4 @@
-# AI Website Builder (No UI Skills Required) 🤖💅
+# AI Website Builder
 (((I mean, if you're using it for front end dev use ***Some*** UI Skill would be required))
 
 ![image](https://github.com/user-attachments/assets/b14efe8c-dff1-41dc-8336-fa2450ccd766)
